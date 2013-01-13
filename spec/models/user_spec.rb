@@ -10,20 +10,20 @@
 #
 require 'spec_helper'
 
-describe "User pages" do
+# describe "User pages" do
 
-  subject { page }
+#   subject { page }
 
-  describe "profile page" do
-    let(:user) { FactoryGirl.create(:user) }
-    before { visit user_path(user) }
+#   describe "profile page" do
+#     let(:user) { FactoryGirl.create(:user) }
+#     before { visit user_path(user) }
 
-    it { should have_selector('h1', text: user.name)}
-    it { should have_selector('title', text: user.name)}
-  end
-end
+#     it { should have_selector('h1', text: user.name)}
+#     it { should have_selector('title', text: user.name)}
+#   end
+# end
 
-# describe User do
+describe User do
 
 #   before do
 #     @user = User.new(name: "lm", email: "lm@163.com", password: "foobar", password_confirmation: "foobar" )
@@ -123,5 +123,19 @@ end
 
 #   it { should_not be_valid }
 #   end
+	before do
+		@user = User.new(name: "Example User", email: "user@example.com",
+						password: "foobar", password_confirmation: "foobar")
+	end
 
-# end
+	subject { @user }
+
+	it { should respond_to(:password_confirmation) }
+	it { should respond_to(:remember_token) }	
+	it { should respond_to(:authenticate) }
+
+	describe "remember_token" do
+		before { @user.save }
+		its(:remember_token) { should_not be_blank }
+	end
+end
