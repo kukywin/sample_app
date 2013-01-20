@@ -32,7 +32,52 @@ describe "User pages" do
   		# it "should create a user" do
   		# 	expect { click_button submit }.to change(User, :count).by(1)
   		# end
+    end
 
+    describe "edit" do
+      let(:user) { FactoryGirl.create(:user)}
+      before { visit edit_user_path(user) }
+
+      # describe "page" do
+      #   it { should have_selector("h1", text: "Update your profile")}
+      #   it { should have_selector("title", text: "Edit text") }
+      #   it { should have_link("change", href: 'http://gravatar.com/emails')}
+      # end
+
+      describe "with invalid information" do
+        before { click_button "Save changes"}
+        # it { should have_content("error")}
+      end
+    end
+
+    describe "index" do
+      let(:user) { FactoryGirl.create(:user) }
+
+      before do
+        sign_in user
+        visit users_path
+      end
+
+      it { should have_selector('title', text: 'All users') }
+      it { should have_selector('h1', text: 'All users') }
+
+      describe 'delete links' do
+        it { should_not have_link('delete') }
+
+        describe "as an admin user" do
+          let(:admin) { FactoryGirl.create(:admin) }
+          before do
+            sign_in admin
+            visit users_path
+          end
+
+          it { should have_link('delete', href: user_path(User.first)) }
+          it "should be able to delele another user" do
+            expect { click_link('delete')  }.to_change(User, :count).by(-1)
+          end
+          it { should_not have_link('delete', href: user_path(admin)) }
+        end
+      end
 
     end
 end
